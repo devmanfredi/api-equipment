@@ -2,12 +2,12 @@ package com.api.equipment.controller;
 
 import com.api.equipment.dto.EquipamentoDTO;
 import com.api.equipment.dto.EquipamentoDeleteDTO;
+import com.api.equipment.exception.ApiError;
 import com.api.equipment.model.Equipamento;
 import com.api.equipment.service.EquipamentoService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,19 +16,31 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/equipamento")
-@Tag(name = "Equipamento", description = "Endpoint para gerenciamento de Equipamentos")
 public class EquipamentoController {
 
     private final EquipamentoService service;
 
-    @Operation(description = "Cria um novo equipamento", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody())
+    @ApiOperation(
+            value = "Salva Equipamento"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Requisição mal formatada", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Erro na api", response = ApiError.class)
+    })
     @PostMapping
     public Equipamento save(@RequestBody EquipamentoDTO equipamento) {
         return service.save(new Equipamento(null, equipamento.getNome(), equipamento.getCodigo(), equipamento.getDescricao()));
     }
 
-    @Operation(description = "busca equipamento pelo id", parameters = {
-            @Parameter(name = "id", in = ParameterIn.QUERY, required = true, description = "id parameter")
+
+    @ApiOperation(
+            value = "Recupera dados do equipamento por ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Requisição mal formatada", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Erro na api", response = ApiError.class)
     })
     @GetMapping("/{id}")
     public EquipamentoDTO findById(@PathVariable Long id) {
@@ -36,14 +48,27 @@ public class EquipamentoController {
         return new EquipamentoDTO(equipamento.getNome(), equipamento.getCodigo(), equipamento.getDescricao());
     }
 
-    @Operation(description = "Retorna uma lista de equipamentos")
+    @ApiOperation(
+            value = "Recupera todos os equipamentos cadastrados"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Requisição mal formatada", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Erro na api", response = ApiError.class)
+    })
     @GetMapping
     public List<Equipamento> findAll() {
         return service.findAll();
     }
 
-    @Operation(description = "deleta equipamento pelo id", parameters = {
-            @Parameter(name = "id", in = ParameterIn.QUERY, required = true, description = "id parameter")
+
+    @ApiOperation(
+            value = "Deleta equipamento"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Requisição mal formatada", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Erro na api", response = ApiError.class)
     })
     @DeleteMapping("/{id}")
     public EquipamentoDeleteDTO delete(@PathVariable Long id) {
