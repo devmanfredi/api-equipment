@@ -21,7 +21,7 @@ public class EquipamentoService {
     }
 
     public Equipamento findById(Long id) {
-        if (repository.findById(id).isPresent()){
+        if (!repository.findById(id).isPresent()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Equipamento não encontrado");
         } else {
             return repository.findById(id).get();
